@@ -1,0 +1,21 @@
+name: Deploy scraps github pages
+on: 
+  push:
+    branches:
+      - main
+    paths:
+      - 'scraps/**'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # For scraps git commited date
+      - name: build_and_deploy
+        uses: boykush/scraps-deploy-action@v2
+        env:
+          # Target branch
+          PAGES_BRANCH: gh-pages
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}

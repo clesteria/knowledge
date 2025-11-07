@@ -250,3 +250,13 @@ guix system init /mnt/etc/config.scm /mnt
                           %base-initrd-modules))
 ```
 
+### lxc
+
+```shell
+doas apt install -y dnsmasq
+doas systemctl stop dnsmasq
+doas systemctl disable dnsmasq
+```
+
+
+

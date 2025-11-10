@@ -104,6 +104,10 @@ yay --sudo doas --save
 yay -S choosenim
 ```
 
+```shell
+nimble stable
+```
+
 ### yash
 
 ```shel
@@ -133,6 +137,11 @@ doas sed -i -e "s:^#ja_JP.UTF-8:ja_JP.UTF-8:" -e "s:^#en_US.UTF-8:en-US.UTF-8:" 
 doas doas locale-gen
 ```
 
+### gemini-cli
+
+```shel
+yay -S gemini-cli
+```
 
 
 

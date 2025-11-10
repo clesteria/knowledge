@@ -143,7 +143,14 @@ doas doas locale-gen
 yay -S gemini-cli
 ```
 
+### podman
 
+```shell
+yay -S podman podman-compose
+doas loginctl enable-linger 1000
+```
+```
+```
 
 
 

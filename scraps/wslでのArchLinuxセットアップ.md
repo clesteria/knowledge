@@ -149,8 +149,13 @@ yay -S gemini-cli
 yay -S podman podman-compose
 doas loginctl enable-linger 1000
 ```
+
+- https://matthewsanabria.dev/posts/podman-error-arch-wsl2/
+
+```shell
+doas setcap cap_setuid+ep /usr/bin/newuidmap
+doas setcap cap_setgid+ep /usr/bin/newuidmap
+getcap /usr/bin/newuidmap
+podman ps
+yay -S shadow
 ```
-```
-
-
-

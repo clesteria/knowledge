@@ -1,0 +1,212 @@
+## WSLでのArchLinuxセットアップ
+
+### インストール
+
+- ここだけはWindows側のPowerShellで実施。
+
+```powershell
+wsl --install archlinux
+```
+
+### 初期設定
+
+- 以降はArch Linuxで実施。
+
+#### rootパスワード変更
+
+- 多分何も設定されてないので、いの一番に何か設定する。
+
+```shell
+passwd
+```
+
+#### システムアップデート
+
+- 必ず何らかのアップデートはあるので、とにかく真っ先にやる。
+
+```shell
+pacman -Syu
+```
+
+#### 最低限のパッケージ追加
+
+- パッケージを追加するための base-devel
+- パッケージのソースや dotfiles を持ってくるための git
+- エディタの neovim
+
+```shell
+pacman -S --noconfirm base-devel git neovim
+```
+
+#### pacmanの設定
+
+- `Color` のコメントアウトを外す。
+- `[options]` 配下に `ILoveCandy` を追加する。
+  - パッケージインストールのインジケータがパワーエサを食べるパックマンになるだけ。
+
+```shell
+nvim /etc/pacman.conf
+```
+
+#### sudoersの設定
+
+- `%wheel ALL=(ALL:ALL) ALL` の行のコメントアウトを外す。
+
+```shell
+nvim /etc/sudoers
+```
+
+#### ユーザ追加
+
+- ${NEWUSER} には、ユーザ名を入れておく。
+
+```shell
+groupadd -g 1000 ${NEWUSER}
+useradd -d /home/${NEWUSER} -g 1000 -u 1000 -G wheel -s /usr/bin/bash -m ${NEWUSER}
+```
+
+- WSL でのデフォルトユーザとして指定する。
+
+```shell
+cat <<_EOF_ >> /etc/wsl.conf
+[user]
+default=${NEWUSER}
+_EOF_
+```
+
+- 強いパスワードを設定。
+
+```shell
+passwd ${NEWUSER}
+```
+
+#### doas
+
+- OpenBSDで採用されてる軽量 `sudo` 的コマンド。
+  - これを入れても `sudo` が捨てられるわけではないのであまり意味はない。
+- wheelグループのみ使用を許可する設定をする。
+
+```shell
+pacman -S --noconfirm doas
+echo 'permit persist :wheel' >> /etc/doas.conf
+doas -C /etc/doas.conf
+chmod 400 /etc/doas.conf
+```
+
+#### 再起動
+
+- 一旦WSLから抜ける。
+
+```shell
+exit
+```
+
+- Windows側から、Archの再起動を実施する。
+
+```powershell
+wsl -t archlinux
+```
+
+### パッケージ追加
+
+#### Arch User Repository対応
+
+- 以下の機能を備える `pacman` ラッパーの `yay` を導入する。
+  - AURのパッケージを入れる
+  - root以外から `pacman` を実行できる(でも `doas` や `sudo` は必要なのであまり効果がないように見える)。
+
+```shell
+mkdir -p ~/codes/aur && cd $_
+git clone --depth 1 https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+pacman -Qi yay
+```
+
+- `yay` でroot権限が必要な時に実行されるコマンドを `doas` に変更。
+
+```shell
+yay --sudo doas --save
+```
+
+#### LazyVim
+
+```shell
+git clone --depth 1 https://github.com/LazyVim/starter ~/.config/nvim
+rm -rf ~/.config/nvim/.git
+```
+
+```shell
+cat << _EOF_ > ~/.config/nvim/lua/plugins/colorscheme.lua
+return {
+  { "sonph/onehalf" },
+  {
+    "LazyVim/LazyVim",
+    opts = {
+      colorscheme = "onehalfdark",
+    },
+  },
+}
+```
+
+### nim
+
+```shell
+yay -S choosenim
+```
+
+```shell
+nimble stable
+```
+
+### yash
+
+```shel
+yay -S yash
+```
+
+### ghq
+
+```shell
+yay -S ghq
+```
+
+```shell
+mkdir ~/ghq
+```
+
+### eza 
+
+```shell
+yay -S eza
+```
+
+### locale
+
+```shell
+doas sed -i -e "s:^#ja_JP.UTF-8:ja_JP.UTF-8:" -e "s:^#en_US.UTF-8:en-US.UTF-8:" /etc/locale.gen
+doas doas locale-gen
+```
+
+### gemini-cli
+
+```shel
+yay -S gemini-cli
+```
+
+### podman
+
+```shell
+yay -S podman podman-compose
+doas loginctl enable-linger 1000
+```
+
+- https://matthewsanabria.dev/posts/podman-error-arch-wsl2/
+
+```shell
+doas setcap cap_setuid+ep /usr/bin/newuidmap
+doas setcap cap_setgid+ep /usr/bin/newuidmap
+getcap /usr/bin/newuidmap
+podman ps
+yay -S shadow
+```

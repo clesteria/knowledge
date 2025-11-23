@@ -1,0 +1,36 @@
+name: Deploy Scraps to Cloudflare Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      # Rust環境のセットアップ
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      # Scrapsのインストール
+      - name: Install Scraps
+        run: cargo install scraps
+
+      # 静的サイトのビルド
+      - name: Build Site
+        run: scraps build
+
+      # Cloudflare Pages へのデプロイ
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: knowledge
+          directory: public

@@ -1,0 +1,87 @@
+## QEMUでGuixのVMを作る
+
+### VM作成
+
+- proxmoxのホストで実施
+
+```shell
+doas /sbin/qm create 101 --name guix --memory 2048 --cores 2 --net0 virtio,bridge=vmbr1 --ostype l26 --scsihw virtio-scsi-pci
+doas /sbin/qm set 101 --serial0 socket
+doas /sbin/qm set 101 --ide2 local:iso/guix-system-install-1.4.0.x86_64-linux.iso,media=cdrom
+doas /sbin/qm set 101 --scsi0 local-lvm:vm-101-disk-0
+doas /sbin/qm set 101 --boot order=scsi0
+doas /sbin/qm start 101
+```
+
+### Guix インストール
+
+- インストーラを起動して、CUIインストールを選ぶ。
+
+#### ネットワーク設定
+
+- Guix はインストール時にネットワーク接続が必須のため、外に接続するための設定が必要になった。
+- DHCPで変なアドレスを設定しようとするので、無効にして適切な設定を入れる。
+
+```shell
+herd stop networking
+ip l set dev eth0 down
+ip a flush dev eth0
+ip r flush dev eth0
+ip a add 10.10.10.2/24 dev eth0
+ip l set dev eth0 up
+ip r add default via 10.10.10.1
+```
+
+- CloudflareのDNSサーバをネームサーバに指定。
+
+```shell
+cat << _EOF_ > /etc/resolv.conf
+nameserver 1.1.1.1
+nameserver 1.0.0.1
+_EOF_
+```
+
+#### パーティション
+
+- `cfdisk` がTUIなのでログが残せない。
+- /dev/sda1 を /boot、/dev/sda2 を swap、/dev/sda3 を / に割り当て
+  - インストール中は、/dev/sda3 を /mnt にマウントする
+
+```shell
+cfdisk
+parted /dev/sda set 1 esp on
+mkfs.fat -F32 /dev/sda1
+mkfs.ext4 -L root /dev/sda3
+mount LABEL=root /mnt
+mkswap /dev/sda2
+swapon /dev/sda2
+```
+
+#### インストール
+
+- /dev/sda3 に config.scm を配置
+
+```shell
+mkdir /mnt/etc
+cp -p /etc/configuration/bare-bones.scm /mnt/etc/config.scm
+vi /mnt/etc/config.scm
+```
+
+- VMのSCSIディスク用設定を追加
+
+```guile
+  (initrd-modules (append (list "virtio_scsi")
+                          %base-initrd-modules))
+```
+
+- 書き込み先を /mnt に変更
+
+```shell
+herd start cow-store /mnt
+```
+
+- config.scm に基づいてインストール実行
+
+```shell
+guix system init /mnt/etc/config.scm /mnt
+```

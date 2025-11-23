@@ -1,8 +1,8 @@
-## 古いiMacにproxmoxを入れた記録
+#[[Deploy]] #[[Linux]] #[[proxmox]]
 
-### 基本のキ
+## 初期設定
 
-#### sshd
+### sshd
 
 - /etc/sshd_config は触らず、/etc/ssh/sshd_config.d に confg を置いて必要なパラメータを上書きする。
 - 標準ポートにしないなら、 `${SSHD_PORT}` には、ssh用のポート番号を入れておく。
@@ -24,7 +24,7 @@ _EOF_
 systemctl restart sshd
 ```
 
-#### 管理用ユーザ追加
+### 管理用ユーザ追加
 
 - rootで運用前提なのかインストール時にユーザが作られないので自分で作る。
 - wheelグループがないので作る。
@@ -35,7 +35,7 @@ addgroup --system wheel
 useradd ${NEWUSER} -G wheel -m -d /home/${NEWUSER}
 ```
 
-#### doas
+### doas
 
 - OpenBSDで採用されてる軽量 `sudo` 的コマンド。
   - これを入れても `sudo` が捨てられるわけではないのであまり意味はない。
@@ -50,7 +50,7 @@ chmod 400 /etc/doas.conf
 
 - 以降、基本的に前項で作った管理用ユーザでログインし直す。
 
-#### ファイアウォール
+### ファイアウォール
 
 - Proxmoxの操作コマンドである `pvesh` で設定する。
   - `ufw` を入れる手順ばかりだったが、折角専用ツールがあるのだからと使う。
@@ -74,7 +74,7 @@ doas pvesh create /cluster/firewall/rules --action ACCEPT --type in --source +ma
 doas systemctl restart pve-firewall
 ```
 
-#### cloudflaredインストール
+### cloudflaredインストール
 
 - 安全に外から接続するために入れる。
 - 公式の手順に従う。
@@ -89,9 +89,9 @@ apt install cloudflared
 cloudflared service install ${CLOUDFLARED_TOKEN}
 ```
 
-### ターミナル環境整備
+## ターミナル環境整備
 
-#### gitインストール
+### gitインストール
 
 - homebrew に必要だったので入れる。
   - homebrew は `eza` と `yash` のために必要。
@@ -100,7 +100,7 @@ cloudflared service install ${CLOUDFLARED_TOKEN}
 doas apt install git -y
 ```
 
-#### homebrewインストール
+### homebrewインストール
 
 - /home 配下に homebrew 用ディレクトリを作る。
 
@@ -119,7 +119,7 @@ brew update --force --quiet
 chmod -R go-w "$(brew --prefix)/share/zsh"
 ```
 
-#### yashインストール
+### yashインストール
 
 - POSIX準拠モードという素敵なモードがあるシェル。
 - なんとなく使ってただけの `zsh` よりも軽い気がする。
@@ -146,14 +146,14 @@ cp -p /home/linuxbrew/.linuxbrew/Cellar/yash/2.60/share/yash/initialization/samp
 ```shell
 cat <<_EOF_ >> .yashrc
 
-## homebrew
+# homebrew
 if test -e /home/linuxbrew/.linuxbrew/bin/brew; then
   eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 _EOF_
 ```
 
-#### ezaインストール
+### ezaインストール
 
 - rust製 `ls` 互換コマンド。
   - これの表示に慣れたので、標準の `ls` だと落ち着かないだけで有効活用はできていない。 
@@ -167,14 +167,14 @@ brew install eza
 ```shell
 cat <<_EOF_ >> .yashrc
 
-## eza
+# eza
 which eza > /dev/null 2>&1 && alias ls='eza -g'
 _EOF_
 ```
 
-### proxmoxの設定
+## proxmoxの設定
 
-#### WebUIのサブスクリプション通知メッセージ抑止
+### WebUIのサブスクリプション通知メッセージ抑止
 
 - via https://qiita.com/flathill/items/01321c48bdf8022fa37e
 - 616行目辺りのIF文を修正した。
@@ -183,7 +183,7 @@ _EOF_
 vi /usr/share/javascript/proxmox-widget-toolkit/proxmoxlib.js
 ```
 
-#### メール抑止
+### メール抑止
 
 - システムから送られてくるメールの通知がターミナルに出るのを抑止。
 - `postfix` のサービスを停止。
@@ -193,14 +193,14 @@ doas systemctl stop postfix
 doas systemctl disable postfix
 ```
 
-#### ログインメッセージ抑止
+### ログインメッセージ抑止
 
 ```shell
 doas rm /etc/motd
 doas rm /etc/issue
 ```
 
-### ディスプレイ表示のタイムアウト設定
+## ディスプレイ表示のタイムアウト設定
 
 - `GRUB_CMDLINE_LINUX_DEFAULT` の末尾に `consoleblank=5 nomodeset video=efifb` を追加。
 
@@ -217,9 +217,9 @@ reboot
 
 - ただし、実際には反映されておらず、ディスプレイは付きっぱなし。
 
-### VM関係
+## VM関係
 
-#### VM用内部ネットワーク作成
+### VM用内部ネットワーク作成
 
 - LANとは隔離したVM用ネットワークを作る。
   - proxmoxの機能ではなく、Linuxの仮想NICを作るだけ。
@@ -242,7 +242,7 @@ _EOF_
 systemctl restart networking
 ```
 
-#### NAT設定
+### NAT設定
 
 - VM用ネットワークをNATで外部に繋げる。
   - 外からは直接繋がらず、VMからは外に繋がる。
@@ -267,7 +267,7 @@ doas systemctl restart pveproxy
 doas systemctl restart pvedaemon
 ```
 
-#### dnsmasq追加・無効化
+### dnsmasq追加・無効化
 
 - 必要があったので入れたはずだが、どうして無効にしたのかは憶えてない。
 

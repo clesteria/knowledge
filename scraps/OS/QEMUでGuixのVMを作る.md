@@ -1,6 +1,6 @@
-## QEMUでGuixのVMを作る
+#[[Deploy]] #[[Linux]] #[[Guix]]
 
-### VM作成
+## VM作成
 
 - proxmoxのホストで実施
 
@@ -13,11 +13,11 @@ doas /sbin/qm set 101 --boot order=scsi0
 doas /sbin/qm start 101
 ```
 
-### Guix インストール
+## Guix インストール
 
 - インストーラを起動して、CUIインストールを選ぶ。
 
-#### ネットワーク設定
+### ネットワーク設定
 
 - Guix はインストール時にネットワーク接続が必須のため、外に接続するための設定が必要になった。
 - DHCPで変なアドレスを設定しようとするので、無効にして適切な設定を入れる。
@@ -41,7 +41,7 @@ nameserver 1.0.0.1
 _EOF_
 ```
 
-#### パーティション
+### パーティション
 
 - `cfdisk` がTUIなのでログが残せない。
 - /dev/sda1 を /boot、/dev/sda2 を swap、/dev/sda3 を / に割り当て
@@ -57,7 +57,7 @@ mkswap /dev/sda2
 swapon /dev/sda2
 ```
 
-#### インストール
+### インストール
 
 - /dev/sda3 に config.scm を配置
 

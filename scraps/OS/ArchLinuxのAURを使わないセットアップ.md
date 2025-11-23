@@ -1,10 +1,10 @@
-## Arch Linux の AUR を使わないセットアップ
+#[[Deploy]] #[[Linux]] #[[Arch Linux]]
 
 できるだけ軽量に済ませたい環境として使うための手順。
 
-### インストール
+## インストール
 
-#### ネットワーク設定
+### ネットワーク設定
 
 - WiFiのアクセス設定をする。
 
@@ -15,7 +15,7 @@ iwctl station wlan0 connect <SSID>
 iwctl station wlan0 show
 ```
 
-#### インストール
+### インストール
 
 - インストール内容はファイルに保存しているものを使う。
 
@@ -23,9 +23,9 @@ iwctl station wlan0 show
 archinstall 
 ```
 
-### セットアップ
+## セットアップ
 
-#### doas
+### doas
 
 - OpenBSDで採用されてる軽量 `sudo` 的コマンド。
   - これを入れても `sudo` が捨てられるわけではないのであまり意味はない。
@@ -36,7 +36,7 @@ archinstall
 echo 'permit persist :wheel' >> /mnt/etc/doas.conf
 ```
 
-#### ログインシェル変更
+### ログインシェル変更
 
 - AUR がないので、`zsh` で妥協する。
 
@@ -44,7 +44,7 @@ echo 'permit persist :wheel' >> /mnt/etc/doas.conf
 chsh -s /usr/bin/zsh
 ```
 
-#### ネットワーク
+### ネットワーク
 
 - `iwd` を有効化。
 
@@ -80,7 +80,7 @@ DNS=${WLAN_DNS}
 _EOF_
 ```
 
-#### sshd
+### sshd
 
 - /etc/sshd_config は触らず、/etc/ssh/sshd_config.d に confg を置いて必要なパラメータを上書きする。
 - 標準ポートにしないなら、 `${SSHD_PORT}` には、ssh用のポート番号を入れておく。
@@ -96,7 +96,7 @@ Port ${SSHD_PORT:-22}
 _EOF_
 ```
 
-#### ファイアウォール
+### ファイアウォール
 
 - `ufw` を使用する。
 - LANからの `ssh` 以外は全部ブロックする。
@@ -110,7 +110,7 @@ doas ufw limit ${SSHD_PORT:-22}
 doas ufw enable
 ```
 
-#### ノートPCを閉じた時の動作
+### ノートPCを閉じた時の動作
 
 - ノートPCを閉じた時、電源の状態に関わらず、何もしないように変更する。
 
@@ -118,7 +118,7 @@ doas ufw enable
 doas sed -i -r "s/^#(HandleLidSwitch[a-zA-Z]*)=.+/\1=ignore/g" /etc/systemd/logind.conf
 ```
 
-#### dotfiles
+### dotfiles
 
 - 自分の GitHub から dotfiles リポジトリを clone する。
 
@@ -133,7 +133,7 @@ cd $(ghq root)/github.com/clesteria/dotfiles
 ./create_link.sh
 ```
 
-#### コンテナ
+### コンテナ
 
 - `podman` を使う。
 - コンテナレジストリの省略時に補完される内容を定義する。
@@ -146,7 +146,7 @@ short-name-mode = "permissive"
 _EOF_
 ```
 
-#### neovim
+### neovim
 
 - LazyVim を入れる。
 

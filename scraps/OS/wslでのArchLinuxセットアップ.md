@@ -1,6 +1,6 @@
-## WSLでのArchLinuxセットアップ
+#[[Setup]] #[[WSL]] #[[Linux]] #[[Arch Linux]]
 
-### インストール
+## インストール
 
 - ここだけはWindows側のPowerShellで実施。
 
@@ -8,11 +8,11 @@
 wsl --install archlinux
 ```
 
-### 初期設定
+## 初期設定
 
 - 以降はArch Linuxで実施。
 
-#### rootパスワード変更
+### rootパスワード変更
 
 - 多分何も設定されてないので、いの一番に何か設定する。
 
@@ -20,7 +20,7 @@ wsl --install archlinux
 passwd
 ```
 
-#### システムアップデート
+### システムアップデート
 
 - 必ず何らかのアップデートはあるので、とにかく真っ先にやる。
 
@@ -28,7 +28,7 @@ passwd
 pacman -Syu
 ```
 
-#### 最低限のパッケージ追加
+### 最低限のパッケージ追加
 
 - パッケージを追加するための base-devel
 - パッケージのソースや dotfiles を持ってくるための git
@@ -38,7 +38,7 @@ pacman -Syu
 pacman -S --noconfirm base-devel git neovim
 ```
 
-#### pacmanの設定
+### pacmanの設定
 
 - `Color` のコメントアウトを外す。
 - `[options]` 配下に `ILoveCandy` を追加する。
@@ -48,7 +48,7 @@ pacman -S --noconfirm base-devel git neovim
 nvim /etc/pacman.conf
 ```
 
-#### sudoersの設定
+### sudoersの設定
 
 - `%wheel ALL=(ALL:ALL) ALL` の行のコメントアウトを外す。
 
@@ -56,7 +56,7 @@ nvim /etc/pacman.conf
 nvim /etc/sudoers
 ```
 
-#### ユーザ追加
+### ユーザ追加
 
 - ${NEWUSER} には、ユーザ名を入れておく。
 
@@ -80,7 +80,7 @@ _EOF_
 passwd ${NEWUSER}
 ```
 
-#### doas
+### doas
 
 - OpenBSDで採用されてる軽量 `sudo` 的コマンド。
   - これを入れても `sudo` が捨てられるわけではないのであまり意味はない。
@@ -93,7 +93,7 @@ doas -C /etc/doas.conf
 chmod 400 /etc/doas.conf
 ```
 
-#### 再起動
+### 再起動
 
 - 一旦WSLから抜ける。
 
@@ -107,9 +107,9 @@ exit
 wsl -t archlinux
 ```
 
-### パッケージ追加
+## パッケージ追加
 
-#### Arch User Repository対応
+### Arch User Repository対応
 
 - 以下の機能を備える `pacman` ラッパーの `yay` を導入する。
   - AURのパッケージを入れる
@@ -129,7 +129,7 @@ pacman -Qi yay
 yay --sudo doas --save
 ```
 
-#### LazyVim
+### LazyVim
 
 ```shell
 git clone --depth 1 https://github.com/LazyVim/starter ~/.config/nvim
@@ -149,7 +149,7 @@ return {
 }
 ```
 
-### nim
+## nim
 
 ```shell
 yay -S choosenim
@@ -159,13 +159,13 @@ yay -S choosenim
 nimble stable
 ```
 
-### yash
+## yash
 
 ```shel
 yay -S yash
 ```
 
-### ghq
+## ghq
 
 ```shell
 yay -S ghq
@@ -175,26 +175,26 @@ yay -S ghq
 mkdir ~/ghq
 ```
 
-### eza 
+## eza
 
 ```shell
 yay -S eza
 ```
 
-### locale
+## locale
 
 ```shell
 doas sed -i -e "s:^#ja_JP.UTF-8:ja_JP.UTF-8:" -e "s:^#en_US.UTF-8:en-US.UTF-8:" /etc/locale.gen
 doas doas locale-gen
 ```
 
-### gemini-cli
+## gemini-cli
 
 ```shel
 yay -S gemini-cli
 ```
 
-### podman
+## podman
 
 ```shell
 yay -S podman podman-compose

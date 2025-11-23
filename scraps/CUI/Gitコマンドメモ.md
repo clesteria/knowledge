@@ -1,6 +1,6 @@
-## Gitコマンドメモ
+#[[git]]
 
-### add後にdiffする
+## add後にdiffする
 
 ```shell
 git diff --cached

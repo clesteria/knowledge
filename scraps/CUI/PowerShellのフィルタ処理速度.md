@@ -1,12 +1,10 @@
-## PowerShellのフィルタ処理速度
+#[[PowerShell]]
 
-[[PowerShell]]
-
-### 結論
+## 結論
 
 `Where-Object` より `Where`メソッドの方が早い。のを確認しようとしたけど、オブジェクトに対して `-match` するのが一番早い。
 
-### 準備
+## 準備
 
 System.IO.DirectoryInfo のメンバーを取得して、そこから _BaseName_ をフィルタする。
 
@@ -76,7 +74,7 @@ BaseName ScriptProperty System.Object BaseName {get=$this.Name;}
 BaseName
 ```
 
-### 結果
+## 結果
 
 ```ps1
 > $Measure | ft
@@ -93,7 +91,7 @@ Where-Object(Name) 10000    0.16    6.25    0.12              0.12
 Nameの指定はしなくても同じ結果が得られるのは、そういう仕様かもしれない。他のプロパティに対してだとできなかった。
 速度も指定ありなしで有意な差はなし。
 
-### Measure-Time関数
+## Measure-Time関数
 
 Measure-Commandのラッパー。
 

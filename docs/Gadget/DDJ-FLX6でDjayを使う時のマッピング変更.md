@@ -2,7 +2,7 @@
 
 ## やりたいこと
 
-[djay pro](https://www.algoriddim.com/djay-pro-mac)のNeural MixをDJコントローラから操作できるようにしたい。
+[djay pro](https://www.algoriddim.com/djay-pro-mac)の[Neural Mix](https://www.algoriddim.com/neural-mix)をDJコントローラから操作できるようにしたい。
 
 ## 前提
 

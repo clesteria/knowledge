@@ -1,0 +1,45 @@
+#[[DJ]]
+
+## やりたいこと
+
+[djay pro](https://www.algoriddim.com/djay-pro-mac)の[Neural Mix](https://www.algoriddim.com/neural-mix)をDJコントローラから操作できるようにしたい。
+
+## 前提
+
+macOS版のみ。Windows版は触ったことがないから。
+
+## 説明
+
+マッピング変更の画面は、メニューの _MIDI_ → _コンフィグ DDJ-FLX6_ か、<kbd><kbd>Super</kbd> + <kbd>Y</kbd></kbd> で呼び出す。
+
+- _コンフィグ DDJ-FLX6_ の部分は実際にその時繋げてるDJコントローラの型番とかが出る、はず。対応してないのはどう出るか不明。
+
+DDJ-FLX6の、_PAD MODE_ の中の一番右、 _Shift + SAMPLER_ の _SP.SCRATCH_ という機能は使ってないので、そのモードのパッドを使う。以下の命令にそれぞれの動作を割り当てる。
+
+| コントロール | 動作 | パート |
+| - | - | - |
+| Note E8 | Neural Mix Solo (1) | Drums |
+| Note F8 | Neural Mix Solo (2) | Bass |
+| Note F#8 | Neural Mix Solo (3) | Harmonic |
+| Note G8 | Neural Mix Solo (4) | Vocals |
+| Note G#8 | Neural Mix Mute (1) | Drums |
+| Note A8 | Neural Mix Mute (2) | Bass |
+| Note A#8 | Neural Mix Mute (3) | Harmonic |
+| Note B8 | Neural Mix Mute (4) | Vocals |
+
+デッキごとのチャンネルは以下(同じNoteでチャンネルが別の命令があったが詳細は分かってない)。
+
+- Deck1: Channel8
+- Deck2: Channel10
+- Deck3: Channel12
+- Deck5: Channel14
+
+これらを設定することで、_Neural Mix Solo_ はそのパートだけ鳴らす、_Neural Mix Mute_ はそのパートだけ音を抜く、という動作がワンボタン(Shift + SAMPLERだから本当は二動作必要)でできるようになる。
+
+## 余談
+
+- それぞれのパートの音量を弄ることもできるが、つまみが足りてないのでそれは割り当てずにソフトのUIをクリックやドラッグして操作している。
+- こういう機能が[元々ハード側に付いてるっぽい機種](https://www.rane.com/jp/performer.html)もある。[^1]
+
+[^1]: モーターも付いててとてもいいけどとても高い。
+

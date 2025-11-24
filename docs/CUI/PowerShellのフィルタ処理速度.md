@@ -1,23 +1,21 @@
-## PowerShellのフィルタ処理速度
+#[[PowerShell]]
 
-[[PowerShell]]
-
-### 結論
+## 結論
 
 `Where-Object` より `Where`メソッドの方が早い。のを確認しようとしたけど、オブジェクトに対して `-match` するのが一番早い。
 
-### 準備
+## 準備
 
 System.IO.DirectoryInfo のメンバーを取得して、そこから _BaseName_ をフィルタする。
 
-```ps1
+```powershell
 $Object = Get-Item . | Get-Member
 $Measure = @()
 ```
 
 以下の5ケース。
 
-```ps1
+```powershell
 $Measure += Measure-Time -Expression { $Object | Where-Object { $_ -match "BaseName" } } -Name 'Where-Object'
 $Measure += Measure-Time -Expression { $Object | Where-Object { $_.Name -match "BaseName" } } -Name 'Where-Object(Name)'
 $Measure += Measure-Time -Expression { $Object.Where({ $_ -match "BaseName" }) } -Name '.where'
@@ -27,7 +25,7 @@ $Measure += Measure-Time -Expression { $Object -match 'BaseName' } -Name '-match
 
 それぞれのケースが同じ結果を得られることの確認。
 
-```ps1
+```powershell
 > $Object | Where-Object { $_ -match "BaseName" }
 
    TypeName: System.IO.DirectoryInfo
@@ -71,14 +69,14 @@ BaseName ScriptProperty System.Object BaseName {get=$this.Name;}
 
 これは得られる結果が異なるのでケースには含めない。
 
-```ps1
+```powershell
 > $Object.Name -match "BaseName"
 BaseName
 ```
 
-### 結果
+## 結果
 
-```ps1
+```powershell
 > $Measure | ft
 
 Name               Count Average Maximum Minimum StandardDeviation
@@ -93,11 +91,11 @@ Where-Object(Name) 10000    0.16    6.25    0.12              0.12
 Nameの指定はしなくても同じ結果が得られるのは、そういう仕様かもしれない。他のプロパティに対してだとできなかった。
 速度も指定ありなしで有意な差はなし。
 
-### Measure-Time関数
+## Measure-Time関数
 
 Measure-Commandのラッパー。
 
-```ps1
+```powershell
 function Measure-Time {
     param(
         [scriptblock]$Expression,

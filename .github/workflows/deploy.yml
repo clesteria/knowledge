@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+env:
+  PROJECT_NAME: knowledge
+  PUBLISH_DIR: public
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -14,23 +18,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      # Rust環境のセットアップ
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
-      # Scrapsのインストール
       - name: Install Scraps
-        run: cargo install scraps
+        uses: baptiste0928/cargo-install@v3
+        with:
+          crate: scraps
 
-      # 静的サイトのビルド
       - name: Build Site
         run: scraps build
 
-      # Cloudflare Pages へのデプロイ
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: knowledge
-          directory: public
+          projectName: ${{ env.PROJECT_NAME }}
+          directory: ${{ env.PUBLISH_DIR }}

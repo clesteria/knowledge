@@ -5,7 +5,7 @@ base_url = "https://scraps.magicalsound.net/"
 title = "awkwand junkyard"
 
 # The scraps directory path relative to this Config.toml (optional, default=scraps)
-scraps_dir = "scraps"
+scraps_dir = "docs"
 
 # The site language (compliant with iso639-1, default=en)
 lang_code = "ja"

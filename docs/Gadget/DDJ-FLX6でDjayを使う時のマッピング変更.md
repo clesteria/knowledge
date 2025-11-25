@@ -32,7 +32,7 @@ DDJ-FLX6の、_PAD MODE_ の中の一番右、 _Shift + SAMPLER_ の _SP.SCRATCH
 - Deck1: Channel8
 - Deck2: Channel10
 - Deck3: Channel12
-- Deck5: Channel14
+- Deck4: Channel14
 
 これらを設定することで、_Neural Mix Solo_ はそのパートだけ鳴らす、_Neural Mix Mute_ はそのパートだけ音を抜く、という動作がワンボタン(Shift + SAMPLERだから本当は二動作必要)でできるようになる。
 

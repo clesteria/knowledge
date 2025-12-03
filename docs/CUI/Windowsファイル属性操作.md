@@ -1,0 +1,22 @@
+#[[PowerShell]]
+
+## 結論
+
+```PowerShell
+$Item = Get-Item -Path 'desktop.ini'
+$Item.Attributes = @("Hidden", "System", "Archive")
+```
+
+## 参考
+
+<https://7cc.hatenadiary.jp/entry/powershell_file_attr>
+
+> 属性の実体は数値。ビット演算で求める
+
+## 余談
+
+desktop.ini を間違えて消したリカバリ手段について調べてた時に必要になった情報。
+
+エクスプローラで隠しファイルを表示する設定にしてても見えないファイルは _System_ 属性が付いてる。
+
+エクスプローラのプロパティからも見えなかったはずなので、どうやって操作するかは謎。

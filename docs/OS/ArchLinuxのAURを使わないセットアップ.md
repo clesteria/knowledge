@@ -18,9 +18,10 @@ iwctl station wlan0 show
 ### インストール
 
 - インストール内容はファイルに保存しているものを使う。
+- ユーザー認証は都度設定するのでファイル指定しない。
 
 ```shell
-archinstall 
+archinstall --config /tmp/user_configuration.json
 ```
 
 ## セットアップ
@@ -62,6 +63,13 @@ EnableNetworkConfiguration=false
 
 [Network]
 EnableIPv6=false
+_EOF_
+```
+
+- 不要な設定ファイルを削除
+
+```shell
+doas rm /etc/systemd/network/20-wlan.network
 ```
 
 - systemd でのネットワーク設定ファイルを作成。
@@ -96,6 +104,13 @@ Port ${SSHD_PORT:-22}
 _EOF_
 ```
 
+- デーモンとして起動。
+
+```shell
+doas systemctl enable sshd
+doas systemctl start sshd
+```
+
 ### ファイアウォール
 
 - `ufw` を使用する。
@@ -121,9 +136,10 @@ doas sed -i -r "s/^#(HandleLidSwitch[a-zA-Z]*)=.+/\1=ignore/g" /etc/systemd/logi
 ### dotfiles
 
 - 自分の GitHub から dotfiles リポジトリを clone する。
+  - `--shallow` を入れたいが、認証が必要になるのでしない。
 
 ```shell
-ghq get https://github.com/clesteria/dotfiles.git --shallow
+ghq get https://github.com/clesteria/dotfiles.git
 ```
 
 - ホームディレクトリからリポジトリ内ファイルへのシンボリックリンクを作成する。
@@ -141,7 +157,7 @@ cd $(ghq root)/github.com/clesteria/dotfiles
 ```shell
 mkdir -p ~/.config/containers
 cat <<_EOF_ > ~/.config/containers/registries.conf
-unqualified-search-registries = ["docker.io", "registry.access.redhat.com", "registry.redhat.io"]
+unqualified-search-registries = ["docker.io"]
 short-name-mode = "permissive"
 _EOF_
 ```
@@ -155,3 +171,22 @@ git clone --depth 1 https://github.com/LazyVim/starter ~/.config/nvim
 rm -rf ~/.config/nvim/.git
 nvim
 ```
+
+### cloudflared
+
+- `pacman` でインストール。
+  - `archinstall` でも入れられるかもしれない。
+
+```shell
+pacman -S cloudflared
+```
+
+- デーモンとして起動。
+  - start後に返ってくるのに時間がかかる。
+
+```shell
+doas cloudflared service install ${CLOUDFLARED_TOKEN}
+doas systemctl enable cloudflared
+doas systemctl start cloudflared
+```
+

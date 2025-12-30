@@ -20,3 +20,23 @@ AUTHOREMAIL="129359043+clesteria@users.noreply.github.com"
 git filter-branch -f --env-filter "GIT_AUTHOR_NAME=$AUTHORNAME; GIT_AUTHOR_EMAIL=$AUTHOREMAIL; GIT_COMMITTER_NAME=$AUTHORNAME; GIT_COMMITTER_EMAIL=$AUTHOREMAIL';" HEAD 
 git push origin HEAD -f
 ```
+
+## 指定したコミットから別ブランチで作業してたことにする
+
+develop直接更新してしまってた、とかの時に使った。複数人開発の場合はそもそもそうならないように気を付けるのが大前提。
+
+1. 特定のコミットから新しいブランチを作る。
+
+```shell
+git checkout -b <新しいブランチの名前> <起点とするコミットのID>
+```
+
+コミットしてない更新はそのままになるので、新しいブランチでコミットを作る等する。
+
+2. 元のブランチでは作業されてない事に歴史を改ざんする。
+
+```shell
+git switch <元のブランチ>
+git reset --hard <起点とするコミットの一つ前のコミットのID>
+git push origin HEAD -f
+```

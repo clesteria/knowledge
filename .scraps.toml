@@ -1,0 +1,13 @@
+scraps_dir = "docs"
+timezone = "Asia/Tokyo"
+
+[ssg]
+base_url = "https://scraps.magicalsound.net/"
+title = "awkwand junkyard"
+lang_code = "ja"
+description = "Fragments of personal knowledge."
+favicon = "https://memos.magicalsound.net/api/v1/users/1/avatar"
+color_scheme = "os_setting"
+build_search_index = true
+sort_key = "committed_date"
+paginate_by = 100

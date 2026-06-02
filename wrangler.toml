@@ -1,0 +1,3 @@
+"$schema" = "./node_modules/wrangler/config-schema.json"
+name = "knowledge"
+pages_build_output_dir = "./docs/_site"

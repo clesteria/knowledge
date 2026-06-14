@@ -1,7 +1,8 @@
 timezone = "Asia/Tokyo"
 
 [ssg]
-base_url = "https://scraps.magicalsound.net/"
+#base_url = "https://scraps.magicalsound.net/"
+base_url = "https://clesteria.nekoweb.org/"
 title = "awkwand junkyard"
 lang_code = "ja"
 description = "Fragments of personal knowledge."

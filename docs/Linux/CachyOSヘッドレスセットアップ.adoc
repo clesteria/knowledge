@@ -103,6 +103,21 @@ short-name-mode = "permissive"
 _EOF_' > ~/.config/containers/registries.conf
 ----
 
+ルートレスコンテナをサービス化するために、lingerを有効化する。
+
+[source, shell]
+----
+loginctl enable-linger $USER
+loginctl show-user $USER --property=Linger
+----
+
+Quedlet用のディレクトリを作る。
+
+[source, shell]
+----
+mkdir -p ~/.config/containers/systemd/
+----
+
 === neovim
 
 インストール。

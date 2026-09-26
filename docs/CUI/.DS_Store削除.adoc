@@ -1,12 +1,13 @@
 #[[Shell]] #[[macOS]]
 
-## 結論
+== 結論
 
-```shell
+[source, shell]
+----
 sudo find ${HOME} -name ".DS_Store" -exec rm {} \;
-```
+----
 
-## 説明
+== 説明
 
 `find` の使い方の範疇なのであえて書くことがない。
 

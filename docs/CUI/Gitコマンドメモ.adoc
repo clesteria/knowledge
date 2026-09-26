@@ -1,42 +1,46 @@
 #[[git]]
 
-## add後にdiffする
+== add後にdiffする
 
 どこで調べたか忘れたので出展元記載なし。
 
-```shell
+[source,shell]
+----
 git diff --cached
-```
+----
 
-## [全コミットのAuthorとCommiterを変更する](https://qiita.com/sea_mountain/items/d70216a5bc16a88ed932)
+== [全コミットのAuthorとCommiterを変更する](https://qiita.com/sea_mountain/items/d70216a5bc16a88ed932)
 
 GitLabとGitHubをふらふらしてた時に使ってたり、もっと別のGitホスティングサービスに移行することがあった時に多分使う。
 
 概ね、メールアドレスをサービスが提供してくれる擬態用メールアドレスを使ってるせい。
 
-```shell
+[source,shell]
+----
 AUTHORNAME="clesteria"
 AUTHOREMAIL="129359043+clesteria@users.noreply.github.com"
-git filter-branch -f --env-filter "GIT_AUTHOR_NAME=$AUTHORNAME; GIT_AUTHOR_EMAIL=$AUTHOREMAIL; GIT_COMMITTER_NAME=$AUTHORNAME; GIT_COMMITTER_EMAIL=$AUTHOREMAIL';" HEAD 
+git filter-branch -f --env-filter "GIT_AUTHOR_NAME=$AUTHORNAME; GIT_AUTHOR_EMAIL=$AUTHOREMAIL; GIT_COMMITTER_NAME=$AUTHORNAME; GIT_COMMITTER_EMAIL=$AUTHOREMAIL';" HEAD
 git push origin HEAD -f
-```
+----
 
-## 指定したコミットから別ブランチで作業してたことにする
+== 指定したコミットから別ブランチで作業してたことにする
 
 develop直接更新してしまってた、とかの時に使った。複数人開発の場合はそもそもそうならないように気を付けるのが大前提。
 
-1. 特定のコミットから新しいブランチを作る。
-
-```shell
+. 特定のコミットから新しいブランチを作る。
++
+[source, shell]
+----
 git checkout -b <新しいブランチの名前> <起点とするコミットのID>
-```
-
+----
++
 コミットしてない更新はそのままになるので、新しいブランチでコミットを作る等する。
 
-2. 元のブランチでは作業されてない事に歴史を改ざんする。
-
-```shell
+. 元のブランチでは作業されてない事に歴史を改ざんする。
++
+[source, shell]
+----
 git switch <元のブランチ>
 git reset --hard <起点とするコミットの一つ前のコミットのID>
 git push origin HEAD -f
-```
+----

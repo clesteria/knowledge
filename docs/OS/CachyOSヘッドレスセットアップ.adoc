@@ -1,0 +1,137 @@
+Mac mini 2011 midにインストールした時の記録。
+
+== インストール
+
+ウィザードを指示通り進める上で、意図してスタンダードから外した設定は以下。
+
+* WMはなし
+* どうしてもFirefoxがデフォルトでインストールされる設定なので、きっちりチェックを外す
+* CachyOS独自のコンポーネントらしきものは、CachyOSを選ぶ理由なので残す
+
+== セットアップ
+
+=== ネットワーク設定
+
+* 固定IP化
+* IPv6無効
+
+[source, shell]
+----
+nmcli connection modify "$SSID" ipv4.method manual ipv4.addresses $IPADDRESS/24 ipv4.gateway $GATEWAYADDRESS ipv4.dns "1.1.1.1,1.0.0.1"
+nmcli connection modify "$SSID" ipv6.method "disabled"
+nmcli connection up "$SSID"
+----
+
+=== SSH
+
+必要なディレクトリを作る。
+
+[source, shell]
+----
+mkdir -m 700 ~/.ssh
+----
+
+GitHubに登録している公開鍵をそのまま authorized_keys に転写する。
+
+[source, shell]
+----
+curl https://github.com/clesteria.keys >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+----
+
+sshdの設定ファイルを作成。CachyOSのデフォルトのシェルである `fish` がヒアドキュメントに対応してないので、 `bash` を介する。
+
+[source, shell]
+----
+bash -c "cat <<_EOF_
+PermitRootLogin no
+PasswordAuthentication no
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+KbdInteractiveAuthentication no
+Port $SSHD_PORT
+_EOF_" | sudo tee /etc/ssh/sshd_config.d/10-default.conf > /dev/null
+----
+
+サービス起動。
+
+[source, shell]
+----
+sudo systemctl enable sshd
+sudo systemctl start sshd
+----
+
+=== ファイアウォール
+
+[source, shell]
+----
+sudo ufw default DENY
+sudo ufw allow proto tcp from ${NETWORKADDRESS:-192.168.1.0}/24 to any port ${SSHD_PORT:-22}
+sudo ufw limit ${SSHD_PORT:-22}
+sudo ufw enable
+sudo ufw status
+----
+
+=== 不要パッケージ削除
+
+明示してインストール指示していなく、どのインストール項目で入るか分からないが、サーバには不要なものなので削除。footnote:[だいたいはフォント。絶対いらない。]
+
+[source, shell]
+----
+sudo pacman -Rns ttf-bitstream-vera ttf-dejavu ttf-liberation ttf-meslo-nerd ttf-opensans awesome-terminal-fonts alacritty pipewire-alsa pipewire-pulse noto-fonts noto-fonts-cjk noto-fonts-emoji vlc-plugins-visualization vlc-plugins-all
+----
+
+=== コンテナ
+
+インストール。
+
+[source, shell]
+----
+sudo pacman -S podman
+----
+
+コンテナレジストリの省略時に補完される内容を定義する。
+
+[source, shell]
+----
+mkdir -p ~/.config/containers
+bash -c 'cat <<_EOF_
+unqualified-search-registries = ["docker.io"]
+short-name-mode = "permissive"
+_EOF_' > ~/.config/containers/registries.conf
+----
+
+=== neovim
+
+インストール。
+
+[source, shell]
+----
+sudo pacman -S neovim
+----
+
+* LazyVim は dotfiles に含んだので、そちらで対応する。
+
+### cloudflared
+
+インストール。
+
+[source, shell]
+----
+sudo pacman -S cloudflared
+----
+
+サービス化。トークンはWebでトンネルを作った画面で確認。
+
+[source, shell]
+----
+sudo cloudflared service install $CLOUDFLARED_TOKEN
+----
+
+サービス起動。
+
+[source, shell]
+----
+sudo systemctl enable cloudflared
+sudo systemctl start cloudflared
+----

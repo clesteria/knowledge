@@ -2,7 +2,7 @@
 
 ## インストール
 
-- ここだけはWindows側のPowerShellで実施。
+* ここだけはWindows側のPowerShellで実施。
 
 ```powershell
 wsl --install archlinux
@@ -10,11 +10,11 @@ wsl --install archlinux
 
 ## 初期設定
 
-- 以降はArch Linuxで実施。
+* 以降はArch Linuxで実施。
 
 ### rootパスワード変更
 
-- 多分何も設定されてないので、いの一番に何か設定する。
+* 多分何も設定されてないので、いの一番に何か設定する。
 
 ```shell
 passwd
@@ -22,7 +22,7 @@ passwd
 
 ### システムアップデート
 
-- 必ず何らかのアップデートはあるので、とにかく真っ先にやる。
+* 必ず何らかのアップデートはあるので、とにかく真っ先にやる。
 
 ```shell
 pacman -Syu
@@ -30,9 +30,9 @@ pacman -Syu
 
 ### 最低限のパッケージ追加
 
-- パッケージを追加するための base-devel
-- パッケージのソースや dotfiles を持ってくるための git
-- エディタの neovim
+* パッケージを追加するための base-devel
+* パッケージのソースや dotfiles を持ってくるための git
+* エディタの neovim
 
 ```shell
 pacman -S --noconfirm base-devel git neovim
@@ -40,8 +40,8 @@ pacman -S --noconfirm base-devel git neovim
 
 ### pacmanの設定
 
-- `Color` のコメントアウトを外す。
-- `[options]` 配下に `ILoveCandy` を追加する。
+* `Color` のコメントアウトを外す。
+* `[options]` 配下に `ILoveCandy` を追加する。
   - パッケージインストールのインジケータがパワーエサを食べるパックマンになるだけ。
 
 ```shell
@@ -50,7 +50,7 @@ nvim /etc/pacman.conf
 
 ### sudoersの設定
 
-- `%wheel ALL=(ALL:ALL) ALL` の行のコメントアウトを外す。
+* `%wheel ALL=(ALL:ALL) ALL` の行のコメントアウトを外す。
 
 ```shell
 nvim /etc/sudoers
@@ -58,14 +58,14 @@ nvim /etc/sudoers
 
 ### ユーザ追加
 
-- ${NEWUSER} には、ユーザ名を入れておく。
+* ${NEWUSER} には、ユーザ名を入れておく。
 
 ```shell
 groupadd -g 1000 ${NEWUSER}
 useradd -d /home/${NEWUSER} -g 1000 -u 1000 -G wheel -s /usr/bin/bash -m ${NEWUSER}
 ```
 
-- WSL でのデフォルトユーザとして指定する。
+* WSL でのデフォルトユーザとして指定する。
 
 ```shell
 cat <<_EOF_ >> /etc/wsl.conf
@@ -74,7 +74,7 @@ default=${NEWUSER}
 _EOF_
 ```
 
-- 強いパスワードを設定。
+* 強いパスワードを設定。
 
 ```shell
 passwd ${NEWUSER}
@@ -82,9 +82,9 @@ passwd ${NEWUSER}
 
 ### doas
 
-- OpenBSDで採用されてる軽量 `sudo` 的コマンド。
-  - これを入れても `sudo` が捨てられるわけではないのであまり意味はない。
-- wheelグループのみ使用を許可する設定をする。
+* OpenBSDで採用されてる軽量 `sudo` 的コマンド。
+** これを入れても `sudo` が捨てられるわけではないのであまり意味はない。
+* wheelグループのみ使用を許可する設定をする。
 
 ```shell
 pacman -S --noconfirm doas
@@ -95,13 +95,13 @@ chmod 400 /etc/doas.conf
 
 ### 再起動
 
-- 一旦WSLから抜ける。
+* 一旦WSLから抜ける。
 
 ```shell
 exit
 ```
 
-- Windows側から、Archの再起動を実施する。
+* Windows側から、Archの再起動を実施する。
 
 ```powershell
 wsl -t archlinux
@@ -111,9 +111,9 @@ wsl -t archlinux
 
 ### Arch User Repository対応
 
-- 以下の機能を備える `pacman` ラッパーの `yay` を導入する。
-  - AURのパッケージを入れる
-  - root以外から `pacman` を実行できる(でも `doas` や `sudo` は必要なのであまり効果がないように見える)。
+* 以下の機能を備える `pacman` ラッパーの `yay` を導入する。
+** AURのパッケージを入れる
+** root以外から `pacman` を実行できる(でも `doas` や `sudo` は必要なのであまり効果がないように見える)。
 
 ```shell
 mkdir -p ~/codes/aur && cd $_
@@ -123,7 +123,7 @@ makepkg -si
 pacman -Qi yay
 ```
 
-- `yay` でroot権限が必要な時に実行されるコマンドを `doas` に変更。
+* `yay` でroot権限が必要な時に実行されるコマンドを `doas` に変更。
 
 ```shell
 yay --sudo doas --save
@@ -201,7 +201,7 @@ yay -S podman podman-compose
 doas loginctl enable-linger 1000
 ```
 
-- https://matthewsanabria.dev/posts/podman-error-arch-wsl2/
+* https://matthewsanabria.dev/posts/podman-error-arch-wsl2/
 
 ```shell
 doas setcap cap_setuid+ep /usr/bin/newuidmap

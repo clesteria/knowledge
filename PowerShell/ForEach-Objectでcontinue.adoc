@@ -1,4 +1,4 @@
-#[[PowerShell]]
+= ForEach-Objectでcontinue
 
 == 結論
 
@@ -6,7 +6,7 @@
 
 == 参考
 
-<https://yukimemi.github.io/post/2013-10-19-foreach_object_continue/> footnote:[参考というかただそのまま。]
+https://yukimemi.github.io/post/2013-10-19-foreach_object_continue/ footnote:[参考というかただそのまま。]
 
 == 余談
 

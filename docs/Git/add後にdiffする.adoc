@@ -1,0 +1,8 @@
+= add後にdiffする
+
+どこで調べたか忘れたので出展元記載なし。
+
+[source,shell]
+----
+git diff --cached
+----

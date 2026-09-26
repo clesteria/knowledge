@@ -1,4 +1,4 @@
-#[[PowerShell]]
+= Windowsファイル属性操作
 
 == 結論
 

@@ -1,4 +1,4 @@
-#[[PowerShell]]
+= PowerShellのフィルタ処理速度検証
 
 == 結論
 
@@ -98,7 +98,7 @@ Nameの指定はしなくても同じ結果が得られるのは、そういう�
 
 == Measure-Time関数
 
-Measure-Commandのラッパー。
+`Measure-Command` のラッパー。
 
 [source, powershell]
 ----

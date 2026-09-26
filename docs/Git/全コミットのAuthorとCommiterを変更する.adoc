@@ -1,0 +1,13 @@
+= [全コミットのAuthorとCommiterを変更する](https://qiita.com/sea_mountain/items/d70216a5bc16a88ed932)
+
+GitLabとGitHubをふらふらしてた時に使ってたり、もっと別のGitホスティングサービスに移行することがあった時に多分使う。
+
+概ね、メールアドレスをサービスが提供してくれる擬態用メールアドレスを使ってるせい。
+
+[source,shell]
+----
+AUTHORNAME="clesteria"
+AUTHOREMAIL="129359043+clesteria@users.noreply.github.com"
+git filter-branch -f --env-filter "GIT_AUTHOR_NAME=$AUTHORNAME; GIT_AUTHOR_EMAIL=$AUTHOREMAIL; GIT_COMMITTER_NAME=$AUTHORNAME; GIT_COMMITTER_EMAIL=$AUTHOREMAIL';" HEAD
+git push origin HEAD -f
+----

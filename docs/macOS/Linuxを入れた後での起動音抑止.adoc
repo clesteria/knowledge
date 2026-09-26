@@ -1,0 +1,29 @@
+= Linuxを入れた後での起動音抑止
+
+Macの筐体から鳴る、ジャーンというような音を消す設定をせずにmacOSを消した場合の対応方法。
+
+== 結論
+
+[source, shell]
+----
+# 1. 属性保護を解除
+sudo chattr -i /sys/firmware/efi/efivars/SystemAudioVolume* 2>/dev/null || true
+
+# 2. tee を使って root 権限で書き込み（80 = ミュート）
+printf "\x07\x00\x00\x00\x80" | sudo tee /sys/firmware/efi/efivars/SystemAudioVolume-7c436110-ab2a-4bbb-a880-fe41995c9f82 > /dev/null
+printf "\x07\x00\x00\x00\x00" | sudo tee /sys/firmware/efi/efivars/SystemAudioVolumeDB-7c436110-ab2a-4bbb-a880-fe41995c9f82 > /dev/null
+
+# 3. 再び保護属性を付与（任意）
+sudo chattr +i /sys/firmware/efi/efivars/SystemAudioVolume* 2>/dev/null || true
+----
+
+[source, shell]
+----
+sudo find ${HOME} -name ".DS_Store" -exec rm {} \;
+----
+
+== 説明
+
+* `chattr` でEFI変数に付与されているイミュータブル属性を解除し、設定後に戻している。
+* printf で渡しているのは、先頭4バイトがEFI変数の属性フラグで、実際に音量を設定しているのは、 `\x80` の部分。
+** 80でミュートを表す。

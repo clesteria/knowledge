@@ -1,0 +1,35 @@
+= 同じリポジトリをリモートごとに全く別の内容にする
+
+Radicle をメインにすることにした際、GitHubの内容は Radicle のリポジトリへの案内のみにしてコミット履歴も消しておきたいが、そのためのリポジトリを新しく作るのもな。
+
+という欲求を満たした時の手順。
+
+== 手順
+
+コミット履歴をメインブランチと共有しないブランチを作る。
+
+[source, shell]
+----
+git checkout --orphan github-stub
+----
+
+そのブランチでの配下からファイルを消す。
+
+[source, shell]
+----
+git rm -rf .
+----
+
+READMEだけ作って、それを追加。
+
+[source, shell]
+----
+git add README.adoc; git commit -m "Identity migration: Repository moved to Radicle"
+----
+
+リモートの _main_ ブランチに対して、空にしたブランチをプッシュ。
+
+[source, shell]
+----
+git push origin github-stub:main --force
+----
